@@ -10,6 +10,19 @@ sudo ./instalar.sh
 Feito para Ubuntu/Debian. É idempotente: rodar de novo reescreve os mesmos
 arquivos e não estraga nada.
 
+Ao terminar, **o script apaga o próprio clone** — a máquina fica só com as
+policies, sem resquício do que foi usado para instalá-las. Numa linha:
+
+```bash
+git clone https://github.com/bernardo-steigleder-under/paginainicial-frota.git /tmp/frota && sudo /tmp/frota/instalar.sh
+```
+
+A remoção é defensiva: só apaga um diretório que seja um clone (tem `.git`) e
+que contenha exatamente `instalar.sh` e `README.md` — nada além. Rodar o script
+de dentro de uma pasta com outras coisas, ou de um lugar que não é clone, faz
+ele recusar e avisar, em vez de apagar. `LIMPAR=nao` desliga a limpeza, que é o
+que você quer enquanto estiver testando.
+
 ## O que ele faz
 
 Escreve duas policies em `/etc/opt/chrome/policies/managed/` e sai. Não

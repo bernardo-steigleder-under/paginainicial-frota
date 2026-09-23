@@ -120,3 +120,45 @@ else:
 PY
   echo "   backup em $(basename "$outro").antes-da-paginainicial"
 done
+
+# Apaga o próprio clone, para não deixar rastro na máquina de quem recebeu.
+#
+# LIMPAR=nao pula esta parte — útil enquanto se testa, e obrigatório se você
+# estiver rodando a partir de um diretório de trabalho de verdade.
+#
+# A remoção é defensiva de propósito: só apaga um diretório que contenha
+# exatamente o que este repositório tem, e nada além. Rodar o script de um
+# lugar errado (um `sudo ~/instalar.sh` com o arquivo solto no home, por
+# exemplo) não pode virar um rm -rf no home de ninguém.
+LIMPAR="${LIMPAR:-sim}"
+
+limpar_clone() {
+  local dir="$1"
+
+  case "$dir" in
+    /|/home|/root|/etc|/usr|/var|/opt|/tmp|"$HOME") return 1 ;;
+  esac
+  [ -d "$dir/.git" ] || return 1
+
+  # Todo arquivo presente tem de ser um dos nossos.
+  local conhecido
+  while IFS= read -r item; do
+    case "$(basename "$item")" in
+      instalar.sh|README.md|.git|.|..) ;;
+      *) return 1 ;;
+    esac
+  done < <(find "$dir" -maxdepth 1 -mindepth 1)
+
+  rm -rf -- "$dir"
+}
+
+if [ "$LIMPAR" = "sim" ]; then
+  AQUI="$(cd "$(dirname "$0")" && pwd)"
+  echo
+  if limpar_clone "$AQUI"; then
+    echo "clone removido: $AQUI"
+  else
+    echo "clone mantido em $AQUI — não parece um clone limpo do repositório."
+    echo "apague à mão se quiser: rm -rf $AQUI"
+  fi
+fi
