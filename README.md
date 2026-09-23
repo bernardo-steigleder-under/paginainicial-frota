@@ -72,4 +72,4 @@ por exemplo), e aí este script precisa ser atualizado e rodado de novo em todas
 as máquinas.
 
 O código da extensão e da página vive em
-[paginainicial](https://github.com/bernardo-steigleder-under/paginainicial).
+[home](https://github.com/bernardo-steigleder-under/home).
