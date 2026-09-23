@@ -94,6 +94,18 @@ for outro in "$POLICY_DIR"/*.json; do
     continue
   fi
 
+  # JSON quebrado (vírgula sobrando, comentário // no meio) não é raro nesses
+  # arquivos, e aqui vale pular o arquivo em vez de interromper o script: o
+  # resto do diretório ainda precisa ser olhado, e o clone ainda precisa ser
+  # apagado. A checagem vem antes do backup de propósito — falhar depois do
+  # `cp` deixaria um .antes-da-paginainicial de um arquivo que ninguém editou.
+  if ! python3 -m json.tool "$outro" >/dev/null 2>&1; then
+    echo "!! $outro não é JSON válido — não mexi nele."
+    echo "   as chaves de home dele continuam disputando com as nossas."
+    echo "   veja o erro com: python3 -m json.tool $outro"
+    continue
+  fi
+
   cp -a "$outro" "$outro.antes-da-paginainicial"
   CAMINHO="$outro" CHAVES="$CHAVES_DE_HOME" python3 - <<'PY'
 import json, os

@@ -62,6 +62,11 @@ backup `.antes-da-paginainicial` ao lado, e preserva o resto (o
 Chrome e não tem relação com isto). Arquivo que só tinha chaves de home é
 removido inteiro.
 
+Arquivo que não é JSON válido (vírgula sobrando, comentário `//`) é pulado com
+aviso, e não interrompe a instalação: o script segue para os outros arquivos e
+não deixa backup de um arquivo que não editou. As chaves de home dele continuam
+disputando — corrija à mão e rode de novo.
+
 `CONFLITO_MODO=avisar ./instalar.sh` volta a só reportar, sem editar.
 
 ⚠️ Se algum outro processo de vocês distribui esses arquivos, ele vai reescrever
